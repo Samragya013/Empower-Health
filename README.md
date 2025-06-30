@@ -18,7 +18,7 @@ Successfully deployed on Render, it’s live and ready to impress. Let’s dive 
 - **Deployment Glory**: Render (live at lightning speed)
 - **Version Control**: Git, GitHub (teamwork makes the dream work)
 
-## 🎉 Get Started: Unleash the Oracle Locally
+## 🎉 Get Started: Unleash the Magic Locally
 Ready to explore? Here’s how to run this beauty on your machine:
 
 ### Prerequisites
@@ -26,4 +26,10 @@ Ready to explore? Here’s how to run this beauty on your machine:
 - Git (your coding sidekick)
 
 ### Step-by-Step
-1. Click on the link and have the taste of this project : https://diabetes-assessment-app.onrender.com/
+1. Clone the repo and step in:
+   ```bash
+   git clone https://github.com/Samragya013/Empower-Health.git
+   cd diabetes-risk-app
+
+2. pip install -r requirements.txt
+3. python app.py
