@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empower Health - Your Diabetes Risk Assessment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 1s ease-out; }
+        .hover-scale:hover { transform: scale(1.05); transition: transform 0.3s ease; }
+        .progress-bar {
+            position: relative;
+            transition: background 1s ease;
+        }
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            bottom: 10%;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .low-risk .progress-bar {
+            background: conic-gradient(#2e7d32 calc(${risk} * 3.6)deg, #e0e0e0 calc(${risk} * 3.6)deg 360deg);
+        }
+        .high-risk .progress-bar {
+            background: conic-gradient(#d32f2f calc(${risk} * 3.6)deg, #e0e0e0 calc(${risk} * 3.6)deg 360deg);
+        }
+        body { background: linear-gradient(to bottom right, #f0f4f8, #e6f3f5, #f9ecec); }
+    </style>
+    <script>
+        window.onload = function() {
+            const risk = {{ risk }};
+            const progressBar = document.querySelector('.progress-bar');
+            progressBar.style.background = risk > 50 ? 'conic-gradient(#d32f2f ' + (risk * 3.6) + 'deg, #e0e0e0 ' + (risk * 3.6) + 'deg 360deg)' : 'conic-gradient(#2e7d32 ' + (risk * 3.6) + 'deg, #e0e0e0 ' + (risk * 3.6) + 'deg 360deg)';
+            const downloadLink = document.querySelector('a[download]');
+            downloadLink.addEventListener('click', () => alert('PDF downloaded successfully!'));
+        };
+    </script>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="container mx-auto p-8 max-w-3xl">
+        <div class="bg-white shadow-xl rounded-2xl p-10 fade-in border border-gray-200">
+            <div class="flex items-center justify-center mb-8">
+                <img src="/static/logo.png" alt="Empower Health Logo" class="w-16 h-16 mr-3">
+                <h1 class="text-4xl font-extrabold text-gray-700">Empower Health</h1>
+            </div>
+            <p class="text-lg text-gray-600 text-center mb-10">Your Diabetes Risk Assessment</p>
+
+            <div class="mb-10 text-center {% if risk > 50 %}high-risk{% else %}low-risk{% endif %}">
+                <h2 class="text-2xl font-semibold text-gray-700">Risk Score</h2>
+                <div class="relative w-48 h-48 mx-auto my-6">
+                    <div class="progress-bar w-full h-full rounded-full shadow-md"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold {% if risk > 50 %}text-red-800{% else %}text-green-800{% endif %} z-10">{{ "%.2f" | format(risk) }}%</div>
+                </div>
+            </div>
+
+            <div class="mb-8 bg-{% if risk > 50 %}red-50{% else %}green-50{% endif %} p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-700">Recommendation</h3>
+                <p class="text-gray-600 mt-3">{{ recommendation }}</p>
+            </div>
+
+            <div class="mb-8 bg-{% if risk > 50 %}red-50{% else %}green-50{% endif %} p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-700">Health Tip</h3>
+                <p class="text-gray-600 mt-3">{{ tip }}</p>
+            </div>
+
+            <div class="flex justify-center space-x-6">
+                <a href="{{ url_for('download_file', filename=pdf_url) }}" class="bg-{% if risk > 50 %}red-600{% else %}green-600{% endif %} text-white p-4 rounded-lg hover:bg-{% if risk > 50 %}red-700{% else %}green-700{% endif %} hover-scale transition duration-300 shadow-md">Download PDF Report</a>
+                <a href="{{ url_for('predict') }}" class="bg-gray-300 text-gray-800 p-4 rounded-lg hover:bg-gray-400 hover-scale transition duration-300 shadow-md">Back to Assessment</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

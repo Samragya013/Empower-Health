@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empower Health - Diabetes Risk Assessment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 1s ease-out; }
+        .hover-scale:hover { transform: scale(1.05); transition: transform 0.3s ease; }
+        body { background: linear-gradient(to bottom right, #f0f4f8, #e6f3f5, #f9ecec); }
+        #loading { display: none; color: #00796b; text-align: center; font-size: 1.2rem; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="container mx-auto p-8 max-w-3xl">
+        <div class="bg-white shadow-xl rounded-2xl p-10 fade-in border border-gray-200">
+            <div class="flex items-center justify-center mb-8">
+                <img src="/static/logo.png" alt="Empower Health Logo" class="w-16 h-16 mr-3">
+                <h1 class="text-4xl font-extrabold text-gray-700">Empower Health</h1>
+            </div>
+            <p class="text-lg text-gray-600 text-center mb-10">Assess Your Diabetes Risk with Precision</p>
+
+            {% if error %}
+                <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-8 text-center">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" class="space-y-6" onsubmit="document.getElementById('loading').style.display='block';">
+                <div>
+                    <label for="Name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" id="Name" name="Name" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                </div>
+                <div>
+                    <label for="Template" class="block text-sm font-medium text-gray-700">Report Template</label>
+                    <select id="Template" name="Template" class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                        {% for template in templates %}
+                            <option value="{{ template }}">{{ template }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label for="Pregnancies" class="block text-sm font-medium text-gray-700">Pregnancies</label>
+                        <input type="number" id="Pregnancies" name="Pregnancies" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="Glucose" class="block text-sm font-medium text-gray-700">Glucose (mg/dL)</label>
+                        <input type="number" id="Glucose" name="Glucose" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="BloodPressure" class="block text-sm font-medium text-gray-700">Blood Pressure (mmHg)</label>
+                        <input type="number" id="BloodPressure" name="BloodPressure" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="SkinThickness" class="block text-sm font-medium text-gray-700">Skin Thickness (mm)</label>
+                        <input type="number" id="SkinThickness" name="SkinThickness" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="Insulin" class="block text-sm font-medium text-gray-700">Insulin (µU/mL)</label>
+                        <input type="number" id="Insulin" name="Insulin" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="BMI" class="block text-sm font-medium text-gray-700">BMI</label>
+                        <input type="number" id="BMI" name="BMI" step="0.1" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="DiabetesPedigreeFunction" class="block text-sm font-medium text-gray-700">Diabetes Pedigree Function</label>
+                        <input type="number" id="DiabetesPedigreeFunction" name="DiabetesPedigreeFunction" step="0.01" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="Age" class="block text-sm font-medium text-gray-700">Age</label>
+                        <input type="number" id="Age" name="Age" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="StressLevel" class="block text-sm font-medium text-gray-700">Stress Level (1-10)</label>
+                        <input type="number" id="StressLevel" name="StressLevel" min="1" max="10" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300" oninput="this.value = Math.max(1, Math.min(10, this.value))">
+                    </div>
+                    <div>
+                        <label for="FamilyHistory" class="block text-sm font-medium text-gray-700">Family History (1 for Yes, 0 for No)</label>
+                        <input type="number" id="FamilyHistory" name="FamilyHistory" min="0" max="1" required class="mt-2 block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                    </div>
+                </div>
+                <div id="loading" style="display:none;">Processing your data...</div>
+                <button type="submit" class="w-full bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 hover-scale transition duration-300 shadow-md">Predict Risk</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
